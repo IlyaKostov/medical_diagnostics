@@ -6,14 +6,15 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, ListView, TemplateView, RedirectView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.contrib.auth.views import LoginView as BaseLoginView
 
-# from mailing_service.services import add_users_group_permissions, send_verify_mail, new_password_mail
-# from users.forms import UserRegisterForm, UserProfileForm, UserAuthenticationForm
+from catalog.services import add_users_group_permissions, send_verify_mail, new_password_mail
+from users.forms import UserRegisterForm, UserProfileForm, UserAuthenticationForm
 from users.models import User
 
 
@@ -46,9 +47,9 @@ class RegisterView(SuccessMessageMixin, CreateView):
         self.object.save()
         self.object.groups.add(group)
         url = f'''http://127.0.0.1:8000/users/verify/{token}'''
-
-        if form.is_valid():
-            send_verify_mail(url, self.object.email)
+        print('Зарегистрировался')
+        # if form.is_valid():
+        #     send_verify_mail(url, self.object.email)
         return super().form_valid(form)
 
 
@@ -61,23 +62,7 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
 
-# def reset_password(request):
-#     """Сброс пароля"""
-#     if request.method == 'POST':
-#         input_email = request.POST.get('email')
-#         user = User.objects.filter(email=input_email).first()
-#         if user:
-#             password = ''.join(random.sample(string.digits + string.ascii_letters, 12))
-#             user.set_password(password)
-#             user.save()
-#             new_password_mail(input_email, password)
-#         else:
-#             messages.warning(request, 'Пользователь с таким email не найден')
-#
-#     return render(request, 'users/reset_password.html')
-
-
-class ResetPassword(TemplateView):
+class ResetPasswordView(TemplateView):
     """Сброс пароля"""
     template_name = 'users/reset_password.html'
 
@@ -91,31 +76,22 @@ class ResetPassword(TemplateView):
             new_password_mail(email, password)
         else:
             messages.warning(request, 'Пользователь с таким email не найден')
+        return redirect(reverse('users:reset_password'))
 
 
-# def verify_email(request, token):
-#     """Подтверждение регистрации при использовании токена отправленного на почту пользователя"""
-#     user = User.objects.filter(token=token).first()
-#     if user:
-#         user.is_active = True
-#         user.save()
-#         messages.success(request, 'Пользователь успешно подтвержден')
-#     else:
-#         messages.error(request, 'Пользователь не найден')
-#     return redirect('users:login')
-
-
-class VerifyEmail(RedirectView):
+class VerifyEmailView(RedirectView):
     url = 'users:login'
 
     def get(self, request, *args, **kwargs):
-        user = User.objects.filter(token=args).first()
+        token = kwargs.get('token')
+        user = User.objects.filter(token=token).first()
         if user:
             user.is_active = True
             user.save()
             messages.success(request, 'Пользователь успешно подтвержден')
         else:
             messages.error(request, 'Пользователь не найден')
+        return redirect(reverse('users:login'))
 
 
 class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
