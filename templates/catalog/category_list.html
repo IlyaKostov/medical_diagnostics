@@ -1,0 +1,37 @@
+{% extends 'catalog/index.html' %}
+{% block content %}
+<section data-bs-version="5.1" class="pricing1 cid-tZlMaS0ZUZ" id="pricing-cards-1-tZlMaS0ZUZ">
+    <br>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 content-head">
+                <div class="mbr-section-head mb-5">
+                    <h4 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
+                        <strong>Категории услуг</strong>
+                    </h4>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            {% for object in object_list %}
+            <div class="item features-without-image col-12 col-md-6 col-lg-3 item-mb active">
+                <div class="item-wrapper">
+                    <div class="item-head">
+                        <h5 class="item-title mbr-fonts-style mb-0 display-5">
+                            <strong>{{ object.name }}</strong>
+                        </h5>
+                    </div>
+                    <div class="item-content">
+                        <p class="mbr-text mbr-fonts-style display-7">{{ object.description }}</p>
+                    </div>
+                    <div class="mbr-section-btn item-footer">
+                        <a href="{% url 'catalog:service_list' object.pk %}" class="btn item-btn btn-primary display-7">Выбрать</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

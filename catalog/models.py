@@ -30,6 +30,8 @@ class Service(BaseContent):
     updated_at = models.DateField(auto_now=True, verbose_name='дата последнего изменения')
     is_published = models.BooleanField(default=False, verbose_name='признак публикации')
 
+    user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, verbose_name='пользователь', **NULLABLE)
+
     def __str__(self):
         return f'{self.name} {self.purchase_price}'
 
