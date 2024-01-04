@@ -1,0 +1,63 @@
+{% extends 'catalog/index.html' %}
+{% block content %}
+<section data-bs-version="5.1" class="pricing1 cid-tZlMaS0ZUZ" id="pricing-cards-1-tZlMaS0ZUZ">
+    <br>
+    <br>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 content-head">
+                <div class="mbr-section-head mb-5">
+                    <h4 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
+                        <strong>Ваши записи</strong>
+                    </h4>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+        {% if object_list %}
+            {% for object in object_list %}
+                {% if user.is_staff %}
+                    <div class="item features-without-image col-12 col-md-6 col-lg-3 item-mb active">
+                        <div class="item-wrapper">
+                            <div class="item-head">
+                                <h5 class="item-title mbr-fonts-style mb-0 display-5">
+                                    <strong>Пользователь <nobr>{{ object.user }}</nobr><br> записан на<br> <nobr>{{ object.service }}</nobr></strong>
+                                </h5>
+                            </div>
+                            <div class="item-content">
+                                <p class="mbr-text mbr-fonts-style display-7">{{ object.date }} в {{ object.get_time_display }}</p>
+                            </div>
+                            <div class="mbr-section-btn item-footer">
+                                <a href="{% url 'catalog:appointment' object.pk %}" class="btn item-btn btn-primary display-7">Выбрать</a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="item features-without-image col-12 col-md-6 col-lg-3 item-mb active">
+                        <div class="item-wrapper">
+                            <div class="item-head">
+                                <h5 class="item-title mbr-fonts-style mb-0 display-5">
+                                    <strong>Вы записаны {{ object.service }}</strong>
+                                </h5>
+                            </div>
+                            <div class="item-content">
+                                <p class="mbr-text mbr-fonts-style display-7">{{ object.date }} в {{ object.get_time_display }}</p>
+                            </div>
+                            <div class="mbr-section-btn item-footer">
+                                <a href="{% url 'catalog:appointment' object.pk %}" class="btn item-btn btn-primary display-7">Выбрать</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="mbr-section-btn item-footer">
+                <a href="{% url 'catalog:appointment_create' %}" class="btn item-btn btn-primary display-7">Записаться</a>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
