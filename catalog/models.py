@@ -70,7 +70,7 @@ class Appointment(models.Model):
         (19, '19:00'),
         (20, '20:00'),
     )
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, **NULLABLE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, **NULLABLE, verbose_name='услуга')
     date = models.DateField(verbose_name='дата')
     time = models.PositiveSmallIntegerField(choices=TIME_CHOICES, verbose_name='время')
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, **NULLABLE)
@@ -79,3 +79,4 @@ class Appointment(models.Model):
         unique_together = ['service', 'date', 'time']
         verbose_name = 'запись'
         verbose_name_plural = 'записи'
+        ordering = ('date', 'time')

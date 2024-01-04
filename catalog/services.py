@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 
 def add_users_group_permissions(group):
     """Добавление разрешений в группу users"""
-    permissions = Permission.objects.filter(content_type__model__in=['mailing', 'message', 'client'])
+    permissions = Permission.objects.filter(content_type__model__in=['appointment'])
     for perm in permissions:
         group.permissions.add(perm)
 
@@ -28,3 +28,5 @@ def new_password_mail(email, password):
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[email]
     )
+
+
