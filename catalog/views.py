@@ -1,11 +1,14 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
-from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DetailView, DeleteView
+from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DetailView, DeleteView, edit
 
-from catalog.forms import CategoryForm, ServiceForm
-from catalog.models import Service, Category, Appointment
+from catalog.forms import CategoryForm, ServiceForm, AppointmentForm, FeedbackForm
+from catalog.models import Service, Category, Appointment, Contact
 
 
 class HomePageView(TemplateView):
@@ -23,6 +26,15 @@ class LoginRequiredMessageMixin(LoginRequiredMixin):
     def handle_no_permission(self):
         messages.error(self.request, 'Для доступа к этой странице необходимо авторизоваться')
         return super().handle_no_permission()
+
+
+class UserObjectMixin:
+    """Ограничивает доступ пользователя к чужим объектам"""
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.user != self.request.user and not self.request.user.is_superuser:
+            raise Http404
+        return self.object
 
 
 class CategoryCreateView(LoginRequiredMessageMixin, PermissionRequiredMixin, CreateView):
@@ -46,18 +58,12 @@ class CategoryDeleteView(LoginRequiredMessageMixin, PermissionRequiredMixin, Del
     success_url = reverse_lazy('catalog:category_list')
 
 
-class CategoryListView(LoginRequiredMessageMixin, PermissionRequiredMixin, ListView):
+class CategoryListView(ListView):
     model = Category
-    permission_required = 'catalog.view_category'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
 
 
-class CategoryDetailView(LoginRequiredMessageMixin, PermissionRequiredMixin, DetailView):
+class CategoryDetailView(DetailView):
     model = Category
-    permission_required = 'catalog.view_category'
 
 
 class ServiceCreateView(LoginRequiredMessageMixin, PermissionRequiredMixin, CreateView):
@@ -65,13 +71,6 @@ class ServiceCreateView(LoginRequiredMessageMixin, PermissionRequiredMixin, Crea
     form_class = ServiceForm
     permission_required = 'catalog.add_service'
     success_url = reverse_lazy('catalog:service_list')
-
-    # def get_form(self, form_class=None):
-    #     """Формирование полей 'clients' и 'message' в форме, принадлежащих текущему пользователю"""
-    #     form = super().get_form(form_class)
-    #     form.fields['clients'].queryset = Client.objects.filter(user=self.request.user)
-    #     form.fields['message'].queryset = Message.objects.filter(user=self.request.user)
-    #     return form
 
 
 class ServiceUpdateView(LoginRequiredMessageMixin, PermissionRequiredMixin, UpdateView):
@@ -83,9 +82,8 @@ class ServiceUpdateView(LoginRequiredMessageMixin, PermissionRequiredMixin, Upda
         return reverse('catalog:service', args=[self.kwargs.get('pk')])
 
 
-class ServiceListView(LoginRequiredMessageMixin, PermissionRequiredMixin, ListView):
+class ServiceListView(ListView):
     model = Service
-    permission_required = 'catalog.view_service'
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -93,9 +91,8 @@ class ServiceListView(LoginRequiredMessageMixin, PermissionRequiredMixin, ListVi
         return queryset
 
 
-class ServiceDetailView(LoginRequiredMessageMixin, PermissionRequiredMixin, DetailView):
+class ServiceDetailView(DetailView):
     model = Service
-    permission_required = 'catalog.view_service'
 
 
 class ServiceDeleteView(LoginRequiredMessageMixin, PermissionRequiredMixin, DeleteView):
@@ -106,19 +103,54 @@ class ServiceDeleteView(LoginRequiredMessageMixin, PermissionRequiredMixin, Dele
 
 class AppointmentCreateView(LoginRequiredMessageMixin, PermissionRequiredMixin, CreateView):
     model = Appointment
+    form_class = AppointmentForm
+    permission_required = 'catalog.add_appointment'
+    success_url = reverse_lazy('catalog:appointment_list')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.user = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
 
-class AppointmentDeleteView(LoginRequiredMessageMixin, PermissionRequiredMixin, DeleteView):
+class AppointmentDeleteView(LoginRequiredMessageMixin, PermissionRequiredMixin, UserObjectMixin, DeleteView):
     model = Appointment
+    permission_required = 'catalog.delete_appointment'
+    success_url = reverse_lazy('catalog:appointment_list')
 
 
-class AppointmentUpdateView(LoginRequiredMessageMixin, PermissionRequiredMixin, UpdateView):
+class AppointmentUpdateView(LoginRequiredMessageMixin, PermissionRequiredMixin, UserObjectMixin, UpdateView):
     model = Appointment
+    permission_required = 'catalog.change_appointment'
+    form_class = AppointmentForm
+    success_url = reverse_lazy('catalog:appointment_list')
 
 
-class AppointmentDetailView(LoginRequiredMessageMixin, PermissionRequiredMixin, DetailView):
+class AppointmentDetailView(LoginRequiredMessageMixin, PermissionRequiredMixin, UserObjectMixin, DetailView):
     model = Appointment
+    permission_required = 'catalog.view_appointment'
 
 
 class AppointmentListView(LoginRequiredMessageMixin, PermissionRequiredMixin, ListView):
     model = Appointment
+    permission_required = 'catalog.view_appointment'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(date__gte=datetime.today())
+        if self.request.user.is_staff:
+            return queryset
+        return queryset.filter(user=self.request.user)
+
+
+class ContactView(CreateView):
+    template_name = 'catalog/contact.html'
+    form_class = FeedbackForm
+    model = Contact
+    success_url = reverse_lazy('catalog:contact')
+
+
+class AboutUs(TemplateView):
+    template_name = 'catalog/about_us.html'
+
