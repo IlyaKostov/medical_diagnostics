@@ -46,10 +46,9 @@ class RegisterView(SuccessMessageMixin, CreateView):
 
         self.object.save()
         self.object.groups.add(group)
-        url = f'''http://127.0.0.1:8000/users/verify/{token}'''
-        print('Зарегистрировался')
-        # if form.is_valid():
-        #     send_verify_mail(url, self.object.email)
+        url = f'http://127.0.0.1:8000/users/verify/{token}'
+        if form.is_valid():
+            send_verify_mail(url, self.object.email)
         return super().form_valid(form)
 
 
