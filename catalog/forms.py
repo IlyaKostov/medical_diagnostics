@@ -1,21 +1,25 @@
 from django import forms
 
 from catalog.models import Service, Category, Appointment
+from users.forms import FormClassMixin
 
 
-class ServiceForm(forms.ModelForm):
+class ServiceForm(FormClassMixin, forms.ModelForm):
     class Meta:
         model = Service
         fields = '__all__'
 
 
-class CategoryForm(forms.ModelForm):
+class CategoryForm(FormClassMixin, forms.ModelForm):
     class Meta:
         model = Category
         fields = '__all__'
 
 
-class AppointmentForm(forms.ModelForm):
+class AppointmentForm(FormClassMixin, forms.ModelForm):
     class Meta:
         model = Appointment
-        fields = '__all__'
+        exclude = ('user',)
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d')
+        }
