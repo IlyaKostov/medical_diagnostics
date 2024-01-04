@@ -1,6 +1,6 @@
 from django import forms
 
-from catalog.models import Service, Category, Appointment
+from catalog.models import Service, Category, Appointment, Contact
 from users.forms import FormClassMixin
 
 
@@ -23,3 +23,10 @@ class AppointmentForm(FormClassMixin, forms.ModelForm):
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d')
         }
+
+
+class FeedbackForm(FormClassMixin, forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = '__all__'
+
