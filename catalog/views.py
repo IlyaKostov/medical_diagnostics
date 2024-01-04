@@ -9,15 +9,18 @@ from django.views.generic import TemplateView, CreateView, UpdateView, ListView,
 
 from catalog.forms import CategoryForm, ServiceForm, AppointmentForm, FeedbackForm
 from catalog.models import Service, Category, Appointment, Contact
+from catalog.services import get_random_blog_article
 
 
 class HomePageView(TemplateView):
     template_name = "catalog/index.html"
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context["latest_articles"] = Article.objects.all()[:5]
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['blog_article'] = get_random_blog_article()
+        context['categories'] = Category.objects.order_by('?')[:4]
+        context['services'] = Service.objects.order_by('?')[:3]
+        return context
 
 
 class LoginRequiredMessageMixin(LoginRequiredMixin):
@@ -46,6 +49,7 @@ class CategoryCreateView(LoginRequiredMessageMixin, PermissionRequiredMixin, Cre
 
 class CategoryUpdateView(LoginRequiredMessageMixin, PermissionRequiredMixin, UpdateView):
     model = Category
+    form_class = CategoryForm
     permission_required = 'catalog.change_category'
 
     def get_success_url(self):
@@ -71,6 +75,12 @@ class ServiceCreateView(LoginRequiredMessageMixin, PermissionRequiredMixin, Crea
     form_class = ServiceForm
     permission_required = 'catalog.add_service'
     success_url = reverse_lazy('catalog:service_list')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.user = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
 
 class ServiceUpdateView(LoginRequiredMessageMixin, PermissionRequiredMixin, UpdateView):
@@ -98,7 +108,7 @@ class ServiceDetailView(DetailView):
 class ServiceDeleteView(LoginRequiredMessageMixin, PermissionRequiredMixin, DeleteView):
     model = Service
     permission_required = 'catalog.delete_service'
-    success_url = reverse_lazy('catalog:service_list')
+    success_url = reverse_lazy('catalog:category_list')
 
 
 class AppointmentCreateView(LoginRequiredMessageMixin, PermissionRequiredMixin, CreateView):

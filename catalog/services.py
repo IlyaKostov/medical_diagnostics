@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.contrib.auth.models import Permission
+from django.core.cache import cache
 from django.core.mail import send_mail
+
+from blog.models import Blog
 
 
 def add_users_group_permissions(group):
@@ -30,3 +33,14 @@ def new_password_mail(email, password):
     )
 
 
+def get_random_blog_article():
+    """Кеширование объектов блога для главной страницы"""
+    if settings.CACHE_ENABLED:
+        key = 'blog_article'
+        blog_article = cache.get(key)
+        if blog_article is None:
+            blog_article = Blog.objects.order_by('?')[:4]
+            cache.set(key, blog_article)
+    else:
+        blog_article = Blog.objects.order_by('?')[:4]
+    return blog_article
