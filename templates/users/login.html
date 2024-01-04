@@ -16,6 +16,19 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-8 mx-auto mbr-form" data-form-type="formoid">
+                {% if messages %}
+                        {% for message in messages %}
+                            {% if forloop.last %}
+                                <ul class="messages">
+                                    {% if message.tags == 'error' %}
+                                        <li class="text-danger">{{ message }}</li>
+                                    {% else %}
+                                        <li class="text-{{ message.tags }}">{{ message }}</li>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                 <form method="POST" class="mbr-form form-with-styler" data-form-title="Form Name">
                     <div class="dragArea row">
                         {% csrf_token %}

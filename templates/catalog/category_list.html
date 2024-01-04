@@ -27,11 +27,22 @@
                     </div>
                     <div class="mbr-section-btn item-footer">
                         <a href="{% url 'catalog:service_list' object.pk %}" class="btn item-btn btn-primary display-7">Выбрать</a>
+                        {% if perms.catalog.change_category %}
+                            <a href="{% url 'catalog:category_update' object.pk %}" class="btn item-btn btn-link display-7">Изменить</a>
+                        {% endif %}
+                        {% if perms.catalog.delete_category %}
+                            <a href="{% url 'catalog:category_delete' object.pk %}" class="btn item-btn btn-link display-7">Удалить</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
+    {% if perms.catalog.add_category %}
+        <div class="mbr-section-btn item-footer">
+            <a href="{% url 'catalog:category_create' %}" class="btn item-btn btn-primary display-7">Создать категорию</a>
+        </div>
+    {% endif %}
     </div>
 </section>
 {% endblock %}

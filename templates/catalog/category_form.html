@@ -21,7 +21,7 @@
                         {% csrf_token %}
                         {{ form.as_div }}
                         <div class="col-lg-12 col-md-12 col-sm-12 align-center mbr-section-btn">
-                            <button type="submit" class="btn btn-success display-7">Создать</button>
+                            <button type="submit" class="btn btn-success display-7">{% if object %}Сохранить{% else %}Создать{% endif %}</button>
                             <a href="{% url 'catalog:category_list' %}" class="btn btn-link">Назад</a>
                         </div>
                     </div>
