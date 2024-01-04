@@ -53,7 +53,7 @@
 </section>
 
 
-
+{% if blog_article %}
 <section data-bs-version="5.1" class="news08 cid-tZlMaRYU2Y" id="blog-2-tZlMaRYU2Y">
     
     
@@ -91,7 +91,7 @@
         </div>
     </div>
 </section>
-
+{% endif %}
 <section data-bs-version="5.1" class="gallery07 cid-tZlMaRYfrU" id="gallery-14-tZlMaRYfrU">
   
   
@@ -210,6 +210,7 @@
     </div>
 </section>
 
+    {% if services %}
 <section data-bs-version="5.1" class="pricing02 cid-tZlMaS0nJD" id="service-list-2-tZlMaS0nJD">
     
     
@@ -247,7 +248,8 @@
         </div>
     </div>
 </section>
-
+    {% endif %}
+{% if categories %}
 <section data-bs-version="5.1" class="pricing1 cid-tZlMaS0ZUZ" id="pricing-cards-1-tZlMaS0ZUZ">
     
     
@@ -284,6 +286,7 @@
         </div>
     </div>
 </section>
+    {% endif %}
 
 <section data-bs-version="5.1" class="features19 cid-tZlMaS0ce4" id="features-19-tZlMaS0ce4">
     
