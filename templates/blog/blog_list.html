@@ -1,0 +1,55 @@
+{% extends 'catalog/index.html' %}
+{% block content %}
+    {% load static %}
+    {% load my_tags %}
+<section data-bs-version="5.1" class="gallery07 cid-tZlMaRYfrU" id="gallery-14-tZlMaRYfrU">
+    <br>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 content-head">
+                <div class="mbr-section-head mb-5">
+                    <h4 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
+                        <strong>Блог</strong>
+                    </h4>
+
+                </div>
+            </div>
+        </div>
+            {% if perms.catalog.add_blog %}
+                <div class="mbr-section-btn item-footer">
+                    <a href="{% url 'blog:create' %}" class="btn item-btn btn-primary display-7">Создать новость</a>
+                </div>
+            {% endif %}
+        <div class="row">
+            {% for object in object_list %}
+                <div class="item features-image col-12 col-md-6 col-lg-4">
+                    <div class="item-wrapper">
+                        <div class="item-img">
+                            <img src="{{ object.preview|my_media }}" alt="Упс...">
+                        </div>
+                        <div class="item-content">
+                            <h5 class="item-title mbr-fonts-style display-5">
+                                <strong>{{ object.title }}</strong>
+                            </h5>
+                            <h6 class="item-subtitle mbr-fonts-style display-7">{{ object.category }}</h6>
+                            <div class="mbr-section-btn item-footer">
+                                <a href="{% url 'blog:detail' object.pk %}" class="btn item-btn btn-primary display-7">Подробнее</a>
+                                {% if perms.catalog.change_blog %}
+                                    <a href="{% url 'blog:update' object.pk %}" class="btn item-btn btn-link display-7">Изменить</a>
+                                    <a class="btn btn-warning" href="{% url 'blog:toggle_activity' object.pk %}">Снять публикацию</a>
+                                {% endif %}
+                                {% if perms.catalog.delete_blog %}
+                                    <a href="{% url 'blog:delete' object.pk %}" class="btn item-btn btn-link display-7">Удалить</a>
+                                {% endif %}
+                                <p class="mbr-text mbr-fonts-style display-7">Количество просмотров : {{ object.count_views }}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+{% endblock %}
