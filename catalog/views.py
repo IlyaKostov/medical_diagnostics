@@ -3,9 +3,8 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import Http404
-from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
-from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DetailView, DeleteView, edit
+from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DetailView, DeleteView
 
 from catalog.forms import CategoryForm, ServiceForm, AppointmentForm, FeedbackForm
 from catalog.models import Service, Category, Appointment, Contact
@@ -163,4 +162,3 @@ class ContactView(CreateView):
 
 class AboutUs(TemplateView):
     template_name = 'catalog/about_us.html'
-
