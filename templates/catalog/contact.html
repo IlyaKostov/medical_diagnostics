@@ -1,0 +1,61 @@
+{% extends 'catalog/index.html' %}
+{% block content %}
+    <br>
+    <br>
+    <section data-bs-version="5.1" class="contacts03 cid-tZlMaS1eAA" id="contacts-11-tZlMaS1eAA">
+
+
+
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-4">
+            <div class="col-12 col-md-12">
+              <h5 class="mbr-section-title mbr-fonts-style mt-0 mb-4 display-2">
+                <strong>Контакты</strong>
+              </h5>
+              <p class="mbr-section-subtitle mbr-fonts-style mt-0 mb-4 display-7">
+                Телефон: +7 (123) 456-7890
+                <br>Email: info@diagnostika-zdorovya.ru
+                <br>Адрес: Chelyabinsk Russian Federation
+                <br>Режим работы: Пн-Пт: 9:00 - 18:00
+              </p>
+
+
+            </div>
+          </div>
+            <div class="col-lg-8 side-features">
+            <div class="google-map"><iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCt1265A4qvZy9HKUeA8J15AOC4SrCyZe4&q=Chelyabinsk%20Russian%20Federation" allowfullscreen=""></iframe></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section data-bs-version="5.1" class="form5 cid-tZlMaS1ydf" id="contact-form-2-tZlMaS1ydf">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 content-head">
+                <div class="mbr-section-head mb-5">
+                    <h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
+                        <strong>Свяжитесь с нами</strong>
+                    </h3>
+
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8 mx-auto mbr-form" data-form-type="formoid">
+                <form method="POST" class="mbr-form form-with-styler" data-form-title="Form Name">
+                    {% csrf_token %}
+                    <div class="dragArea row">
+                        {{ form.as_div }}
+                        <div class="col-lg-12 col-md-12 col-sm-12 align-center mbr-section-btn">
+                            <button type="submit" class="btn btn-primary display-7">Отправить</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

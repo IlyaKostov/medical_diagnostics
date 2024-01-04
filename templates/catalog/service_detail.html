@@ -1,0 +1,35 @@
+{% extends 'catalog/index.html' %}
+{% block content %}
+<section data-bs-version="5.1" class="article15 cid-tZlMaRYs9Q" id="about-us-15-tZlMaRYs9Q">
+    <br>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 content-head">
+                <div class="mbr-section-head mb-5">
+                    <h4 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
+                        <strong>Услуга №{{ object.pk }}</strong>
+                    </h4>
+
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md">
+
+                <h6 class="mbr-section-subtitle mbr-fonts-style mt-0 mb-4 display-5">
+                    <strong>{{ object.name }}</strong>
+                </h6>
+            </div>
+            <div class="col-md-12 col-lg-6">
+                <p class="mbr-text mbr-fonts-style display-7">{{ object.description }}</p>
+            </div>
+            <div class="col-md-12 col-lg-6">
+                <p class="mbr-text mbr-fonts-style display-7">{{ object.purchase_price }}.руб</p>
+            </div>
+        </div>
+        <div class="mbr-section-btn item-footer">
+            <a href="{% url 'catalog:appointment_create' %}" class="btn item-btn btn-primary display-7">Записаться</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% load static %}
+<section data-bs-version="5.1" class="menu menu2 cid-tZlMaRYNcR" nonce="menu" id="menu-5-tZlMaRYNcR">
+
+	<nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
+		<div class="container">
+			<div class="navbar-brand">
+				<span class="navbar-logo">
+					<a href="{% url 'catalog:home' %}">
+						<img src="{% static 'images/photo-1603398938378-e54eab446dde.jpeg' %}" alt="medical diagnostics" style="height: 4.3rem;">
+					</a>
+				</span>
+				<span class="navbar-caption-wrap">
+                    <a class="navbar-caption text-black display-4" href="{% url 'catalog:home' %}">ДиагностикаЗдоровья</a>
+                </span>
+			</div>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+				<div class="hamburger">
+					<span></span>
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav nav-dropdown" data-app-modern-menu="true">
+                    <li class="nav-item">
+						<a class="nav-link link text-black display-4" href="{% url 'catalog:category_list' %}">Услуги</a>
+					</li>
+                    <li class="nav-item">
+						<a class="nav-link link text-black display-4" href="{% url 'catalog:about' %}" aria-expanded="false">О нас</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link link text-black display-4" href="{% url 'blog:list' %}">Блог</a>
+					</li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link link text-black display-4" href="{% url 'users:profile' %}">Профиль</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link link text-black display-4" href="{% url 'catalog:appointment_list' %}">Список записей</a>
+                    </li>
+                    <li class="nav-item">
+                        <form id="logout-form" action="{% url 'users:logout' %}" method="post" style="display: none;">
+                            {% csrf_token %}
+                        </form>
+                        <a class="nav-link link text-black display-4" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Выйти</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link link text-black display-4" href="{% url 'users:register' %}">Зарегистрироваться</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link link text-black display-4" href="{% url 'users:login' %}" aria-expanded="false">Авторизоваться</a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+				<div class="navbar-buttons mbr-section-btn">
+                    <a class="btn btn-primary display-4 " href="{% url 'catalog:appointment_create' %}">Записаться</a>
+                </div>
+			</div>
+		</div>
+	</nav>
+</section>
